@@ -1,2 +1,53 @@
 schema: '2.0'
-stages: {}
+stages:
+  download:
+    cmd: bash stages/01_download.sh
+    deps:
+    - path: stages/01_download.sh
+      hash: md5
+      md5: c0999ab77af5630538b403cdf7216237
+      size: 551
+      isexec: true
+    outs:
+    - path: download
+      hash: md5
+      md5: 6e91dcd36becb5e559a95f616fff3a85.dir
+      size: 212644046
+      nfiles: 1
+  unzip:
+    cmd: bash stages/02_unzip.sh
+    deps:
+    - path: download
+      hash: md5
+      md5: 6e91dcd36becb5e559a95f616fff3a85.dir
+      size: 212644046
+      nfiles: 1
+    - path: stages/02_unzip.sh
+      hash: md5
+      md5: a2488e49b442d7e0e8966cd0d9cfe9a4
+      size: 352
+      isexec: true
+    outs:
+    - path: raw
+      hash: md5
+      md5: 15d539a616741bfcf7706f10552dec6b.dir
+      size: 283850283
+      nfiles: 3406
+  build:
+    cmd: .venv/bin/python stages/03_build.py
+    deps:
+    - path: raw
+      hash: md5
+      md5: 15d539a616741bfcf7706f10552dec6b.dir
+      size: 283850283
+      nfiles: 3406
+    - path: stages/03_build.py
+      hash: md5
+      md5: 8f6de597595f254d5fe9d11da9568257
+      size: 4102
+    outs:
+    - path: brick
+      hash: md5
+      md5: 560b02c5249216ad52b7005a2d686bcc.dir
+      size: 6844533
+      nfiles: 1

@@ -15,7 +15,7 @@ stages:
       - raw
 
   build:
-    cmd: python stages/03_build.py
+    cmd: .venv/bin/python stages/03_build.py
     deps:
       - stages/03_build.py
       - raw

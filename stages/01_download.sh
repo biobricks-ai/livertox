@@ -1,36 +1,22 @@
 #!/usr/bin/env bash
 
-# Script to download files
+# Script to download LiverTox data from NCBI FTP
+# Source: https://www.ncbi.nlm.nih.gov/books/NBK547852/
 
-# Get local path
+set -euo pipefail
+
 localpath=$(pwd)
 echo "Local path: $localpath"
 
-# Create the list directory to save list of remote files and directories
-listpath="$localpath/list"
-echo "List path: $listpath"
-mkdir -p $listpath
-cd $listpath;
-
-# Define the FTP base address
-export ftpbase=""
-
-# Retrieve the list of files to download from FTP base address
-wget --no-remove-listing $ftpbase
-cat index.html | grep -Po '(?<=href=")[^"]*' | sort | cut -d "/" -f 10 > files.txt
-rm .listing
-rm index.html
-
-# Create the download directory
-export downloadpath="$localpath/download"
-echo "Download path: $downloadpath"
+# Create download directory
+downloadpath="$localpath/download"
 mkdir -p "$downloadpath"
-cd $downloadpath;
 
-# Download files in parallel
-cat $listpath/files.txt | xargs -P14 -n1 bash -c '
-  echo $0
-  wget -nH -q -nc -P $downloadpath $ftpbase$0
-'
+# LiverTox FTP URL
+LIVERTOX_URL="https://ftp.ncbi.nlm.nih.gov/pub/litarch/29/31/livertox_NBK547852.tar.gz"
 
-echo "Download done."
+echo "Downloading LiverTox database..."
+wget -nv -O "$downloadpath/livertox_NBK547852.tar.gz" "$LIVERTOX_URL"
+
+echo "Download complete."
+ls -lh "$downloadpath"

@@ -1,28 +1,17 @@
 #!/usr/bin/env bash
 
-# Script to unzip files
+# Script to extract LiverTox archive
 
-# Get local path
+set -euo pipefail
+
 localpath=$(pwd)
-echo "Local path: $localpath"
+downloadpath="$localpath/download"
+rawpath="$localpath/raw"
 
-# Set download path
-export downloadpath="$localpath/download"
-echo "Download path: $downloadpath"
+mkdir -p "$rawpath"
 
-# Set list path
-listpath="$localpath/list"
-echo "List path: $listpath"
+echo "Extracting LiverTox archive..."
+tar -xzf "$downloadpath/livertox_NBK547852.tar.gz" -C "$rawpath"
 
-# Create raw path
-export rawpath="$localpath/raw"
-mkdir -p $rawpath
-echo "Raw path: $rawpath"
-
-# Unzip files in parallel
-cat $listpath/files.txt | tail -n +2 | xargs -P14 -n1 bash -c '
-  filename="${0%.*}"
-  echo $downloadpath/$0
-  echo $rawpath/$filename
-  unzip $downloadpath/$0 -d $rawpath/$filename
-'
+echo "Extraction complete."
+find "$rawpath" -type f | head -20
